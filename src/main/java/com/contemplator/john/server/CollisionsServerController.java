@@ -4,6 +4,7 @@ import com.contemplator.john.server.json.CapsuleObstacleJson;
 import com.contemplator.john.server.json.ObstacleJson;
 import com.contemplator.john.server.json.PoseJson;
 import com.contemplator.john.server.json.PositionJson;
+import com.contemplator.john.server.model.ModelRunner;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -11,6 +12,12 @@ import java.util.Date;
 
 @RestController
 public class CollisionsServerController {
+
+    private final ModelRunner runner;
+
+    public CollisionsServerController() {
+        runner = new ModelRunner();
+    }
 
     @RequestMapping("/date")
     public Date date() {
@@ -21,10 +28,7 @@ public class CollisionsServerController {
     @RequestMapping(value = "/run", method = RequestMethod.PUT)
     public PoseJson[] run(@RequestBody PoseJson[] poses) {
         System.out.println("Running");
-        for (PoseJson p : poses) {
-            System.out.println(Arrays.toString(p.getPose()));
-        }
-        return poses;
+        return runner.run(poses);
     }
 
     @RequestMapping(value = "/base", method = RequestMethod.PUT)

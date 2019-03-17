@@ -17,6 +17,10 @@ public class PoseJson {
         this.pose = new double[]{a1, a2, a3, a4, a5, a6};
     }
 
+    public PoseJson(double[] pose) {
+        this.pose = pose;
+    }
+
     public double[] getPose() {
         return pose;
     }

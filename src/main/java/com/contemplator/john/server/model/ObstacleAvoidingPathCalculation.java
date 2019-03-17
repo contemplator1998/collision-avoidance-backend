@@ -9,20 +9,22 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
-public class ObstacleAvoidingPathCalculation {
+class ObstacleAvoidingPathCalculation {
 
     private final NumericalCollisionValidator collisionValidator;
     private final RobotContext context;
     private final RobotEnvironment environment;
 
-    public ObstacleAvoidingPathCalculation(NumericalCollisionValidator collisionValidator, RobotContext context, RobotEnvironment environment) {
+    ObstacleAvoidingPathCalculation(NumericalCollisionValidator collisionValidator,
+                                    RobotContext context,
+                                    RobotEnvironment environment) {
         this.collisionValidator = collisionValidator;
         this.context = context;
         this.environment = environment;
 
     }
 
-    static double getHeuristic(double[] a, double[] b) {
+    private static double getHeuristic(double[] a, double[] b) {
         double result = 0;
         for (int i = 0; i < a.length; i++) {
             result += Math.pow(b[i] - a[i], 2);
@@ -30,19 +32,11 @@ public class ObstacleAvoidingPathCalculation {
         return result;
     }
 
-    public boolean isCollided(double[] angles) {
+    private boolean isCollided(double[] angles) {
         return collisionValidator.isCollided(new Pose(angles), context, environment);
     }
 
-    double[] range(int start, int stop) {
-        double[] doubles = new double[stop - start];
-        for (int i = 0; i < doubles.length; i++) {
-            doubles[i] = start + i;
-        }
-        return doubles;
-    }
-
-    double[][] generateNeighbors() {
+    private double[][] generateNeighbors() {
         double[][] doubles = new double[(int) (Math.pow(3, 6) - 1)][6];
         int index = 0;
 
@@ -62,14 +56,14 @@ public class ObstacleAvoidingPathCalculation {
         return doubles;
     }
 
-    double[][] neighbors = generateNeighbors();
-    Set<String> visited = new HashSet<>();
-    Map<String, String> cameFrom = new HashMap<>();
-    Map<String, Double> d = new HashMap<>();
-    Map<String, Double> fscore = new HashMap<>();
-    NavigableSet<Pair<Double, String>> heap = new TreeSet<>();
+    private double[][] neighbors = generateNeighbors();
+    private Set<String> visited = new HashSet<>();
+    private Map<String, String> cameFrom = new HashMap<>();
+    private Map<String, Double> d = new HashMap<>();
+    private Map<String, Double> fscore = new HashMap<>();
+    private NavigableSet<Pair<Double, String>> heap = new TreeSet<>();
 
-    public List<Pose> aStart(Pose startPose, Pose finishPose) {
+    List<Pose> aStar(Pose startPose, Pose finishPose) {
         final double[] startDouble = startPose.getAngles();
         final double[] goalDouble = finishPose.getAngles();
 
@@ -111,7 +105,7 @@ public class ObstacleAvoidingPathCalculation {
                 while (!current.equals(start)) {
                     final double[] decode = decode(current);
                     if(isCollided(decode)){
-                        throw new RuntimeException("FUUUUUUUUUUUUUUUUUUU");
+                        throw new RuntimeException("Error! Solution has collision!");
                     }
                     data.add(new Pose(decode));
                     current = cameFrom.get(current);
@@ -124,9 +118,9 @@ public class ObstacleAvoidingPathCalculation {
 
             double[] currentDouble = decode(current);
 
-            for (int i = 0; i < neighbors.length; i++) {
-                for (int j = 0; j < neighbors[i].length; j++) {
-                    nextDouble[j] = Math.round((currentDouble[j] + neighbors[i][j]) * 10.0) / 10.0;
+            for (double[] neighbor : neighbors) {
+                for (int j = 0; j < neighbor.length; j++) {
+                    nextDouble[j] = Math.round((currentDouble[j] + neighbor[j]) * 10.0) / 10.0;
                 }
                 double curD = d.get(current) + getHeuristic(currentDouble, nextDouble);
 
