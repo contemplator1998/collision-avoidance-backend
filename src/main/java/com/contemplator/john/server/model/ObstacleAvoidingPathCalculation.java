@@ -40,13 +40,15 @@ class ObstacleAvoidingPathCalculation {
         double[][] doubles = new double[(int) (Math.pow(3, 6) - 1)][6];
         int index = 0;
 
-        for (int i1 = -1; i1 < 2; i1++) {
-            for (int i2 = -1; i2 < 2; i2++) {
-                for (int i3 = -1; i3 < 2; i3++) {
-                    for (int i4 = -1; i4 < 2; i4++) {
-                        for (int i5 = -1; i5 < 2; i5++) {
-                            if (i1 != 0 || i2 != 0 || i3 != 0 || i4 != 0 || i5 != 0) {
-                                doubles[index++] = new double[]{i1, i2, i3, i4, i5};
+        for (int i1 = -1; i1 <= 1; i1++) {
+            for (int i2 = -1; i2 <= 1; i2++) {
+                for (int i3 = -1; i3 <= 1; i3++) {
+                    for (int i4 = -1; i4 <= 1; i4++) {
+                        for (int i5 = -1; i5 <= 1; i5++) {
+                            for (int i6 = -1; i6 <= 1; i6++) {
+                                if (i1 != 0 || i2 != 0 || i3 != 0 || i4 != 0 || i5 != 0 || i6 != 0) {
+                                    doubles[index++] = new double[]{i1, i2, i3, i4, i5, i6};
+                                }
                             }
                         }
                     }
